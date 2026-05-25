@@ -15,7 +15,7 @@ from homeassistant.helpers.selector import (
     SelectSelectorConfig,
 )
 
-from . import CannotConnect, InvalidAuth
+from . import CONF_AREAS_CUSTOM_BYPASS, CONF_ARM_MODE_CUSTOM_BYPASS, CONF_MACRO_CUSTOM_BYPASS, CannotConnect, InvalidAuth
 from .base import CombivoxWebClient
 from .const import (
     DOMAIN,
@@ -25,14 +25,17 @@ from .const import (
     CONF_AREAS_AWAY,
     CONF_AREAS_HOME,
     CONF_AREAS_NIGHT,
+    CONF_AREAS_CUSTOM_BYPASS,
     CONF_AREAS_DISARM,
     CONF_ARM_MODE_AWAY,
     CONF_ARM_MODE_HOME,
     CONF_ARM_MODE_NIGHT,
+    CONF_ARM_MODE_CUSTOM_BYPASS,
     CONF_SCAN_INTERVAL,
     CONF_MACRO_AWAY,
     CONF_MACRO_HOME,
     CONF_MACRO_NIGHT,
+    CONF_MACRO_CUSTOM_BYPASS,
     CONF_MACRO_DISARM,
     DEFAULT_SCAN_INTERVAL,
     ARM_MODE_NORMAL,
@@ -113,6 +116,7 @@ class CombivoxOptionsFlowHandler(config_entries.OptionsFlow):
             areas_away = to_int_list(user_input.get(CONF_AREAS_AWAY, []))
             areas_home = to_int_list(user_input.get(CONF_AREAS_HOME, []))
             areas_night = to_int_list(user_input.get(CONF_AREAS_NIGHT, []))
+            areas_custom_bypass = to_int_list(user_input.get(CONF_AREAS_CUSTOM_BYPASS, []))
             areas_disarm = to_int_list(user_input.get(CONF_AREAS_DISARM, []))
 
             # Convert macro names back to IDs for saving
@@ -134,22 +138,24 @@ class CombivoxOptionsFlowHandler(config_entries.OptionsFlow):
             macro_away_raw = user_input.get(CONF_MACRO_AWAY, "")
             macro_home_raw = user_input.get(CONF_MACRO_HOME, "")
             macro_night_raw = user_input.get(CONF_MACRO_NIGHT, "")
+            macro_custom_bypass_raw = user_input.get(CONF_MACRO_CUSTOM_BYPASS, "")
             macro_disarm_raw = user_input.get(CONF_MACRO_DISARM, "")
 
-            _LOGGER.debug("Macro raw values from UI - away=%s, home=%s, night=%s, disarm=%s",
-                        macro_away_raw, macro_home_raw, macro_night_raw, macro_disarm_raw)
+            _LOGGER.debug("Macro raw values from UI - away=%s, home=%s, night=%s, custom_bypass=%s, disarm=%s",
+                        macro_away_raw, macro_home_raw, macro_night_raw, macro_custom_bypass_raw, macro_disarm_raw)
 
             # Convert macro names to IDs
             macro_away = macro_name_to_id(macro_away_raw)
             macro_home = macro_name_to_id(macro_home_raw)
             macro_night = macro_name_to_id(macro_night_raw)
+            macro_custom_bypass = macro_name_to_id(macro_custom_bypass_raw)
             macro_disarm = macro_name_to_id(macro_disarm_raw)
 
-            _LOGGER.debug("Saving options - macros: away=%s, home=%s, night=%s, disarm=%s",
+            _LOGGER.debug("Saving options - macros: away=%s, home=%s, night=%s, custom_bypass=%s, disarm=%s",
                         macro_away or "(none)", macro_home or "(none)",
-                        macro_night or "(none)", macro_disarm or "(none)")
-            _LOGGER.debug("Saving options - areas: away=%s, home=%s, night=%s, disarm=%s",
-                        areas_away, areas_home, areas_night, areas_disarm)
+                        macro_night or "(none)", macro_custom_bypass or "(none)", macro_disarm or "(none)")
+            _LOGGER.debug("Saving options - areas: away=%s, home=%s, night=%s, custom_bypass=%s, disarm=%s",
+                        areas_away, areas_home, areas_night, areas_custom_bypass, areas_disarm)
 
             # Pad codes to 6 digits if less than 6 characters (panel expects 6 digits)
             user_code = user_input.get(CONF_CODE, "")
@@ -162,9 +168,10 @@ class CombivoxOptionsFlowHandler(config_entries.OptionsFlow):
             arm_mode_away = user_input.get(CONF_ARM_MODE_AWAY, ARM_MODE_NORMAL)
             arm_mode_home = user_input.get(CONF_ARM_MODE_HOME, ARM_MODE_NORMAL)
             arm_mode_night = user_input.get(CONF_ARM_MODE_NIGHT, ARM_MODE_NORMAL)
+            arm_mode_custom_bypass = user_input.get(CONF_ARM_MODE_CUSTOM_BYPASS, ARM_MODE_NORMAL)
 
-            _LOGGER.debug("Arm mode values from UI - away=%s, home=%s, night=%s",
-                        arm_mode_away, arm_mode_home, arm_mode_night)
+            _LOGGER.debug("Arm mode values from UI - away=%s, home=%s, night=%s, custom_bypass=%s", 
+                        arm_mode_away, arm_mode_home, arm_mode_night, arm_mode_custom_bypass)
 
             result = {
                 CONF_CODE: user_code,
@@ -172,13 +179,16 @@ class CombivoxOptionsFlowHandler(config_entries.OptionsFlow):
                 CONF_AREAS_AWAY: areas_away,
                 CONF_AREAS_HOME: areas_home,
                 CONF_AREAS_NIGHT: areas_night,
+                CONF_AREAS_CUSTOM_BYPASS: areas_custom_bypass,
                 CONF_AREAS_DISARM: areas_disarm,
                 CONF_ARM_MODE_AWAY: arm_mode_away,
                 CONF_ARM_MODE_HOME: arm_mode_home,
                 CONF_ARM_MODE_NIGHT: arm_mode_night,
+                CONF_ARM_MODE_CUSTOM_BYPASS: arm_mode_custom_bypass,
                 CONF_MACRO_AWAY: macro_away,
                 CONF_MACRO_HOME: macro_home,
                 CONF_MACRO_NIGHT: macro_night,
+                CONF_MACRO_CUSTOM_BYPASS: macro_custom_bypass,
                 CONF_MACRO_DISARM: macro_disarm,
             }
 
@@ -232,27 +242,32 @@ class CombivoxOptionsFlowHandler(config_entries.OptionsFlow):
         default_away_raw = to_str_list(options.get(CONF_AREAS_AWAY, []))
         default_home_raw = to_str_list(options.get(CONF_AREAS_HOME, []))
         default_night_raw = to_str_list(options.get(CONF_AREAS_NIGHT, []))
+        default_custom_bypass_raw = to_str_list(options.get(CONF_AREAS_CUSTOM_BYPASS, []))
         default_disarm_raw = to_str_list(options.get(CONF_AREAS_DISARM, []))
 
-        _LOGGER.debug("Raw defaults from options - away: %s, home: %s, night: %s, disarm: %s",
-                    default_away_raw, default_home_raw, default_night_raw, default_disarm_raw)
+        _LOGGER.debug("Raw defaults from options - away: %s, home: %s, night: %s, custom_bypass: %s, disarm: %s",
+                    default_away_raw, default_home_raw, default_night_raw, default_custom_bypass_raw, default_disarm_raw)
 
         # Filter to keep only areas that exist in select_areas
         default_away = filter_valid_areas(default_away_raw, select_areas.keys())
         default_home = filter_valid_areas(default_home_raw, select_areas.keys())
         default_night = filter_valid_areas(default_night_raw, select_areas.keys())
+        default_custom_bypass = filter_valid_areas(default_custom_bypass_raw, select_areas.keys())
         default_disarm = filter_valid_areas(default_disarm_raw, select_areas.keys())
 
         if (default_away != default_away_raw or default_home != default_home_raw or
-            default_night != default_night_raw or default_disarm != default_disarm_raw):
-            _LOGGER.warning("Filtered invalid areas - away: %s→%s, home: %s→%s, night: %s→%s, disarm: %s→%s",
+            default_night != default_night_raw or 
+            default_custom_bypass != default_custom_bypass_raw or 
+            default_disarm != default_disarm_raw):
+            _LOGGER.warning("Filtered invalid areas - away: %s→%s, home: %s→%s, night: %s→%s, custom_bypass: %s→%s, disarm: %s→%s",
                           default_away_raw, default_away,
                           default_home_raw, default_home,
                           default_night_raw, default_night,
+                          default_custom_bypass_raw, default_custom_bypass,
                           default_disarm_raw, default_disarm)
 
-        _LOGGER.debug("Building schema with filtered defaults - away: %s, home: %s, night: %s, disarm: %s",
-                    default_away, default_home, default_night, default_disarm)
+        _LOGGER.debug("Building schema with filtered defaults - away: %s, home: %s, night: %s, custom_bypass: %s, disarm: %s",
+                    default_away, default_home, default_night, default_custom_bypass, default_disarm)
 
         # Build helper to convert macro ID to name for defaults
         def macro_id_to_name(macro_id):
@@ -324,6 +339,24 @@ class CombivoxOptionsFlowHandler(config_entries.OptionsFlow):
             vol.Optional(
                 CONF_ARM_MODE_NIGHT,
                 default=options.get(CONF_ARM_MODE_NIGHT, ARM_MODE_NORMAL),
+            ): SelectSelector(
+                SelectSelectorConfig(
+                    options=[ARM_MODE_NORMAL, ARM_MODE_IMMEDIATE, ARM_MODE_FORCED],
+                    translation_key="arm_mode",
+                )
+            ),
+            # CUSTOM_BYPASS MODE: Scenario → Areas → Arm Mode
+            vol.Optional(
+                CONF_MACRO_CUSTOM_BYPASS,
+                default=macro_id_to_name(options.get(CONF_MACRO_CUSTOM_BYPASS, "")),
+            ): vol.In(["No"] + macro_names),
+            vol.Optional(
+                CONF_AREAS_CUSTOM_BYPASS,
+                default=default_custom_bypass,
+            ): cv.multi_select(select_areas),
+            vol.Optional(
+                CONF_ARM_MODE_CUSTOM_BYPASS,
+                default=options.get(CONF_ARM_MODE_CUSTOM_BYPASS, ARM_MODE_NORMAL),
             ): SelectSelector(
                 SelectSelectorConfig(
                     options=[ARM_MODE_NORMAL, ARM_MODE_IMMEDIATE, ARM_MODE_FORCED],

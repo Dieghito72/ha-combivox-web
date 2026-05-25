@@ -34,8 +34,11 @@
           "areas_home": "Aree per Modalità Home",
           "arm_mode_home": "Modalità Armamento - Home",
           "macro_night": "Scenario per Night",
+          "macro_custom_bypass": "Scenario per Custom Bypass",
           "areas_night": "Aree per Modalità Night",
+          "areas_custom_bypass": "Aree per Modalità Custom Bypass",
           "arm_mode_night": "Modalità Armamento - Night",
+          "arm_mode_custom_bypass": "Modalità Armamento - Custom Bypass",
           "macro_disarm": "Scenario per Disinserimento",
           "areas_disarm": "Aree per Disinserimento",
           "scan_interval": "Intervallo Polling Stato (secondi)"
@@ -49,8 +52,11 @@
           "areas_home": "Seleziona le aree da inserire durante l'inserimento home",
           "arm_mode_home": "Seleziona modalità di inserimento home (normale con ritardo uscita, immediato, o forzato bypassando zone aperte)",
           "macro_night": "Seleziona uno scenario da attivare durante l'inserimento night, oppure lascia vuoto per usare le aree (se entrambi sono configurati, le aree hanno priorità)",
+          "macro_custom_bypass": "Seleziona uno scenario da attivare durante l'inserimento custom bypass, oppure lascia vuoto per usare le aree (se entrambi sono configurati, le aree hanno priorità)",
           "areas_night": "Seleziona le aree da inserire durante l'inserimento night",
+          "areas_custom_bypass": "Seleziona le aree da inserire durante l'inserimento custom bypass",
           "arm_mode_night": "Seleziona modalità di inserimento night (normale con ritardo uscita, immediato, o forzato bypassando zone aperte)",
+          "arm_mode_custom_bypass": "Seleziona modalità di inserimento custom bypass (normale con ritardo uscita, immediato, o forzato bypassando zone aperte)",
           "macro_disarm": "Seleziona uno scenario da attivare durante il disinserimento, oppure lascia vuoto per usare le aree (se entrambi sono configurati, le aree hanno priorità)",
           "areas_disarm": "Seleziona aree specifiche da disarmare durante il disinserimento. Se lasciato vuoto, verranno disarmate TUTTE le aree (disinserimento completo)",
           "scan_interval": "Intervallo di polling stato in secondi (predefinito: 5, range consigliato: 3-20)"
