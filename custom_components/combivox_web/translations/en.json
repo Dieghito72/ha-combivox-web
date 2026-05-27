@@ -24,9 +24,22 @@
     "step": {
       "init": {
         "title": "Integration Options",
-        "description": "Configure PIN codes, scenarios and arm modes.",
+        "description": "Configure general settings and supported modes.",
         "data": {
           "code": "Master PIN Code",
+          "scan_interval": "Status Poll Interval (seconds)",
+          "enable_custom_bypass": "Enable custom bypass"
+        },
+        "data_description": {
+          "code": "Master PIN code for arm/disarm operations",
+          "scan_interval": "Status polling interval in seconds (default: 5, recommended range: 3-20)",
+          "enable_custom_bypass": "Check this box to show the Custom Bypass configuration"
+        }
+      },
+      "modes": {
+        "title": "Arming Modes Configuration",
+        "description": "Configure scenarios, areas and arm modes for each state.",
+        "data": {
           "macro_away": "Scenario for Away",
           "areas_away": "Areas for Away Mode",
           "arm_mode_away": "Arm Mode - Away",
@@ -40,11 +53,9 @@
           "arm_mode_night": "Arm Mode - Night",
           "arm_mode_custom_bypass": "Arm Mode - Custom Bypass",
           "macro_disarm": "Scenario for Disarm",
-          "areas_disarm": "Areas for Disarm Mode",
-          "scan_interval": "Status Poll Interval (seconds)"
+          "areas_disarm": "Areas for Disarm Mode"
         },
         "data_description": {
-          "code": "Master PIN code for arm/disarm operations",
           "macro_away": "Select a scenario to activate when arming away, or leave empty to use areas instead (if both are configured, areas have priority)",
           "areas_away": "Select areas to arm when arming away",
           "arm_mode_away": "Select arming mode for away (normal with exit delay, immediate, or forced bypassing open zones)",
@@ -58,8 +69,7 @@
           "arm_mode_night": "Select arming mode for night (normal with exit delay, immediate, or forced bypassing open zones)",
           "arm_mode_custom_bypass": "Select arming mode for custom bypass (normal with exit delay, immediate, or forced bypassing open zones)",
           "macro_disarm": "Select a scenario to activate when disarming, or leave empty to use areas instead (if both are configured, areas have priority)",
-          "areas_disarm": "Select specific areas to disarm when disarming. If left empty, ALL areas will be disarmed (complete disarm)",
-          "scan_interval": "Status polling interval in seconds (default: 5, recommended range: 3-20)"
+          "areas_disarm": "Select specific areas to disarm when disarming. If left empty, ALL areas will be disarmed (complete disarm)"
         }
       }
     }

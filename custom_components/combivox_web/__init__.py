@@ -63,6 +63,7 @@ from .const import (
     CONF_ARM_MODE_AWAY,
     CONF_ARM_MODE_HOME,
     CONF_ARM_MODE_NIGHT,
+    CONF_ENABLE_CUSTOM_BYPASS,
     CONF_ARM_MODE_CUSTOM_BYPASS,
     CONF_MACRO_AWAY,
     CONF_MACRO_HOME,
@@ -236,6 +237,7 @@ def _extract_new_config(config_entry: ConfigEntry) -> Dict[str, Any]:
         "arm_mode_night": config_entry.options.get(CONF_ARM_MODE_NIGHT, "normal"),
         "arm_mode_custom_bypass": config_entry.options.get(CONF_ARM_MODE_CUSTOM_BYPASS, "normal"),
         "scan_interval": new_scan_interval,
+        "enable_bypass": config_entry.options.get(CONF_ENABLE_CUSTOM_BYPASS, False),
     }
 
 
@@ -265,7 +267,9 @@ def _get_current_config(alarm_panel) -> Dict[str, Any]:
             "arm_mode_home": "normal",
             "arm_mode_night": "normal",
             "arm_mode_custom_bypass": "normal",
+            "enable_bypass": False,
         }
+
 
     return {
         "areas_away": alarm_panel.areas_away or [],
@@ -282,6 +286,7 @@ def _get_current_config(alarm_panel) -> Dict[str, Any]:
         "arm_mode_home": alarm_panel.arm_mode_home,
         "arm_mode_night": alarm_panel.arm_mode_night,
         "arm_mode_custom_bypass": alarm_panel.arm_mode_custom_bypass,
+        "enable_bypass": alarm_panel.enable_bypass,
     }
 
 
@@ -327,11 +332,15 @@ def _detect_changes(new_config: Dict[str, Any], current_config: Dict[str, Any],
     scan_interval_changed = (current_interval is not None and
                             current_interval != new_config["scan_interval"])
 
+    # Check enable bypass checkbox
+    enable_bypass_changed = new_config["enable_bypass"] != current_config["enable_bypass"]
+
     return {
         "areas": areas_changed,
         "macros": macros_changed,
         "arm_modes": arm_modes_changed,
         "scan_interval": scan_interval_changed,
+        "enable_bypass": enable_bypass_changed,
     }
 
 
@@ -349,6 +358,17 @@ async def _apply_changes(hass: HomeAssistant, config_entry: ConfigEntry,
     """
     alarm_panel = _get_alarm_panel_entity(hass, config_entry)
     coordinator = hass.data.get(DOMAIN, {}).get(config_entry.entry_id, {}).get(DATA_COORDINATOR)
+
+    if changes["enable_bypass"]:
+        _LOGGER.info("Custom bypass option changed - updating alarm panel entity features to: %s", new_config["enable_bypass"])
+        try:
+            if alarm_panel:
+                alarm_panel.update_enable_bypass(new_config["enable_bypass"])
+                _LOGGER.info("Alarm panel custom bypass feature updated successfully")
+            else:
+                _LOGGER.warning("Alarm panel entity not found, cannot update custom bypass feature")
+        except Exception as e:
+            _LOGGER.error("Error updating alarm panel entity custom bypass feature: %s", e)
 
     # Update areas dynamically (no reload needed)
     if changes["areas"]:

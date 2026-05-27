@@ -16,6 +16,7 @@ CONF_ARM_MODE_HOME = "arm_mode_home"
 CONF_ARM_MODE_NIGHT = "arm_mode_night"
 CONF_ARM_MODE_CUSTOM_BYPASS = "arm_mode_custom_bypass"
 CONF_SCAN_INTERVAL = "scan_interval"
+CONF_ENABLE_CUSTOM_BYPASS = "enable_custom_bypass"
 
 # Macro mapping configuration
 CONF_MACRO_AWAY = "macro_away"
