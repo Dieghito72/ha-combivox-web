@@ -153,3 +153,4 @@ For issues, questions, or contributions:
 
 [hacs-shield]: https://img.shields.io/badge/hacs-default-orange.svg
 [hacs-url]: https://hacs.xyz/
+ 
