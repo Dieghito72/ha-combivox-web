@@ -1,4 +1,4 @@
-  # Combivox Alarm Web Integration for Home Assistant
+   # Combivox Alarm Web Integration for Home Assistant
 
 [![hacs][hacs-shield]][hacs-url]
 [![GitHub Release](https://img.shields.io/github/v/release/stich86/ha-combivox-web)](https://github.com/stich86/ha-combivox-web/releases)
