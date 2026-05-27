@@ -34,8 +34,11 @@
           "areas_home": "Areas for Home Mode",
           "arm_mode_home": "Arm Mode - Home",
           "macro_night": "Scenario for Night",
+          "macro_custom_bypass": "Scenario for Custom Bypass",
           "areas_night": "Areas for Night Mode",
+          "areas_custom_bypass": "Areas for Custom Bypass Mode",
           "arm_mode_night": "Arm Mode - Night",
+          "arm_mode_custom_bypass": "Arm Mode - Custom Bypass",
           "macro_disarm": "Scenario for Disarm",
           "areas_disarm": "Areas for Disarm Mode",
           "scan_interval": "Status Poll Interval (seconds)"
@@ -49,8 +52,11 @@
           "areas_home": "Select areas to arm when arming home",
           "arm_mode_home": "Select arming mode for home (normal with exit delay, immediate, or forced bypassing open zones)",
           "macro_night": "Select a scenario to activate when arming night, or leave empty to use areas instead (if both are configured, areas have priority)",
+          "macro_custom_bypass": "Select a scenario to activate when arming custom bypass, or leave empty to use areas instead (if both are configured, areas have priority)",
           "areas_night": "Select areas to arm when arming night",
+          "areas_custom_bypass": "Select areas to arm when arming custom bypass",
           "arm_mode_night": "Select arming mode for night (normal with exit delay, immediate, or forced bypassing open zones)",
+          "arm_mode_custom_bypass": "Select arming mode for custom bypass (normal with exit delay, immediate, or forced bypassing open zones)",
           "macro_disarm": "Select a scenario to activate when disarming, or leave empty to use areas instead (if both are configured, areas have priority)",
           "areas_disarm": "Select specific areas to disarm when disarming. If left empty, ALL areas will be disarmed (complete disarm)",
           "scan_interval": "Status polling interval in seconds (default: 5, recommended range: 3-20)"
