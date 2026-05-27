@@ -140,7 +140,7 @@ The integration supports downloading diagnostic data:
 
 1. Go to **Settings** → **Devices & Services**
 2. Find **Combivox Alarm Web** integration
-3. Click the three dots menu (⋮)
+3. Click the three dots menu (⋮) 
 4. Select **Download Diagnostics**
 
 A JSON file will be downloaded with comprehensive diagnostic information (connection, state, configuration, device info, live panel data).
