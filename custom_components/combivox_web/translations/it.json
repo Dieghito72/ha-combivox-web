@@ -139,18 +139,21 @@
       "clear_alarm_memory": {
         "name": "Cancella Memoria Allarmi"
       }
-    }
-  },
-  "state": {
-    "alarm_control_panel__combivox_alarm": {
-      "armed_away": "inserito away",
-      "armed_home": "inserito home",
-      "armed_night": "inserito night",
-      "armed_custom_bypass": "inserito personalizzato",
-      "disarmed": "riposo",
-      "arming": "inserimento in corso",
-      "pending": "pre-allarme",
-      "triggered": "allarme"
+    },
+    "alarm_control_panel": {
+      "combivox_alarm": {
+        "name": "Combivox Alarm",
+        "state": {
+          "armed_away": "Inserito fuori casa",
+          "armed_home": "Inserito in casa",
+          "armed_night": "Inserito notte",
+          "armed_custom_bypass": "Inserito personalizzato",
+          "disarmed": "Riposo",
+          "arming": "Inserimento in corso",
+          "pending": "Pre-allarme",
+          "triggered": "Allarme"
+        }
+      }
     }
   },
   "services": {
