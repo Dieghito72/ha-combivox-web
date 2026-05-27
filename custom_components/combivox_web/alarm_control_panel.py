@@ -22,6 +22,7 @@ from .const import (
     CONF_AREAS_AWAY,
     CONF_AREAS_HOME,
     CONF_AREAS_NIGHT,
+    CONF_ENABLE_CUSTOM_BYPASS,
     CONF_AREAS_CUSTOM_BYPASS,
     CONF_AREAS_DISARM,
     CONF_ARM_MODE_AWAY,
@@ -54,6 +55,9 @@ async def async_setup_entry(
 
     # Get device info for HA
     device_info = client.get_device_info_for_ha()
+
+    # Get custom bypass enabling status
+    enable_bypass = entry.options.get(CONF_ENABLE_CUSTOM_BYPASS, False)
 
     # Get area mappings from options (not data!)
     areas_away = entry.options.get(CONF_AREAS_AWAY, [])
@@ -90,6 +94,7 @@ async def async_setup_entry(
         macro_away=macro_away,
         macro_home=macro_home,
         macro_night=macro_night,
+        enable_bypass=enable_bypass,
         macro_custom_bypass=macro_custom_bypass,
         macro_disarm=macro_disarm,
         arm_mode_away=arm_mode_away,
@@ -122,6 +127,7 @@ class CombivoxAlarmControlPanel(CoordinatorEntity, AlarmControlPanelEntity):
         macro_away: str = "",
         macro_home: str = "",
         macro_night: str = "",
+        enable_bypass: bool = False,
         macro_custom_bypass: str = "",
         macro_disarm: str = "",
         arm_mode_away: str = "normal",
@@ -133,6 +139,8 @@ class CombivoxAlarmControlPanel(CoordinatorEntity, AlarmControlPanelEntity):
         super().__init__(coordinator)
         self.client = client
         self.coordinator = coordinator
+
+        self.enable_bypass = enable_bypass
 
         # Store area mappings for each arm mode (NO DEFAULTS - use exactly what's configured)
         # Empty list = no areas configured for this mode
@@ -162,9 +170,11 @@ class CombivoxAlarmControlPanel(CoordinatorEntity, AlarmControlPanelEntity):
         self._attr_supported_features = (
             AlarmControlPanelEntityFeature.ARM_HOME
             | AlarmControlPanelEntityFeature.ARM_AWAY
-            | AlarmControlPanelEntityFeature.ARM_NIGHT
-            | AlarmControlPanelEntityFeature.ARM_CUSTOM_BYPASS
+            | AlarmControlPanelEntityFeature.ARM_NIGHT            
         )
+
+        if enable_bypass:
+            self._attr_supported_features |= AlarmControlPanelEntityFeature.ARM_CUSTOM_BYPASS
 
         # Do not require code for arming
         self._attr_code_arm_required = False 
@@ -215,6 +225,19 @@ class CombivoxAlarmControlPanel(CoordinatorEntity, AlarmControlPanelEntity):
         self.arm_mode_custom_bypass = arm_mode_custom_bypass
         _LOGGER.debug("Alarm panel arm modes updated - away: %s, home: %s, night: %s, night: %s, custom_bypass: %s",
                      self.arm_mode_away, self.arm_mode_home, self.arm_mode_night, self.arm_mode_custom_bypass)
+
+    def update_enable_bypass(self, enable_bypass: bool) -> None:
+        """Update custom bypass enabling status."""
+        self.enable_bypass = enable_bypass
+        if enable_bypass:
+            # Add features
+            self._attr_supported_features |= AlarmControlPanelEntityFeature.ARM_CUSTOM_BYPASS
+        else:
+            # Remove features
+            self._attr_supported_features &= ~AlarmControlPanelEntityFeature.ARM_CUSTOM_BYPASS
+        
+        # Force Home Assistant to redraw entity UI
+        self.async_write_ha_state()
 
     @property
     def state(self) -> str:
